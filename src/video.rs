@@ -11,7 +11,7 @@ pub struct Video<'a>(pub(crate) PhantomData<&'a ::Library>, pub(crate) [*mut ();
 impl<'a> Video<'a> {
     #[inline]
     pub fn new_window(&self, title: &Nul<u8>, pos: [WindowPos; 2], size: [int; 2],
-                      flags: WindowFlags) -> Result<Ptr<Window>, ::Error> { unsafe {
+                      flags: WindowFlags) -> Result<Ptr<'a, Window>, ::Error> { unsafe {
         Ptr::new(SDL_CreateWindow(title.as_ptr() as _, pos[0].to_int(), pos[1].to_int(),
                                   size[0], size[1], flags.bits) as _).ok_or(::Error::get())
     } }
