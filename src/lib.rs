@@ -4,7 +4,6 @@
 extern crate bitflags;
 extern crate libc;
 extern crate null_terminated;
-extern crate ptr as ptr_;
 extern crate sdl2_sys;
 
 use core::{cmp, fmt};
@@ -14,6 +13,9 @@ use null_terminated::Nul;
 use sdl2_sys::*;
 
 mod lock;
+
+pub mod ptr;
+pub use ptr::Ptr;
 
 #[derive(Debug)]
 pub struct Library(lock::Guard<'static>, [*mut (); 0]);

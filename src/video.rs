@@ -1,5 +1,5 @@
 use core::marker::PhantomData;
-use ptr_::Unique;
+use ptr::Ptr;
 use sdl2_sys::*;
 
 use ::Nul;
@@ -11,10 +11,9 @@ pub struct Video<'a>(pub(crate) PhantomData<&'a ::Library>, pub(crate) [*mut ();
 impl<'a> Video<'a> {
     #[inline]
     pub fn new_window(&self, title: &Nul<u8>, pos: [WindowPos; 2], size: [int; 2],
-                      flags: WindowFlags) -> Result<Window, ::Error> { unsafe {
-        Unique::new(SDL_CreateWindow(title.as_ptr() as _, pos[0].to_int(), pos[1].to_int(),
-                                     size[0], size[1], flags.bits))
-            .map(|w| Window(w, PhantomData)).ok_or(::Error::get())
+                      flags: WindowFlags) -> Result<Ptr<Window>, ::Error> { unsafe {
+        Ptr::new(SDL_CreateWindow(title.as_ptr() as _, pos[0].to_int(), pos[1].to_int(),
+                                  size[0], size[1], flags.bits) as _).ok_or(::Error::get())
     } }
 }
 
@@ -33,20 +32,22 @@ impl WindowPos {
     } }
 }
 
-pub struct Window<'a>(Unique<SDL_Window>, PhantomData<Video<'a>>);
+#[repr(C)]
+pub struct Window(SDL_Window);
 
-impl<'a> Window<'a> {
+impl Window {
     #[inline]
-    pub fn new_renderer(&self, ix: Option<int>,
-                        flags: RendererFlags) -> Result<Renderer, ::Error> { unsafe {
-        Unique::new(SDL_CreateRenderer(self.0.as_ptr(), ix.unwrap_or(-1), flags.bits))
-            .map(|r| Renderer(r, PhantomData)).ok_or(::Error::get())
+    pub fn new_renderer(&mut self, ix: Option<int>,
+                        flags: RendererFlags) -> Result<Ptr<Renderer>, ::Error> { unsafe {
+        Ptr::new(SDL_CreateRenderer(&mut self.0, ix.unwrap_or(-1), flags.bits) as _)
+            .ok_or(::Error::get())
     } }
 }
 
-impl<'a> Drop for Window<'a> {
+impl ::ptr::private::Sealed for Window {}
+impl ::ptr::DropPtr for Window {
     #[inline]
-    fn drop(&mut self) { unsafe { SDL_DestroyWindow(self.0.as_ptr()) } }
+    fn drop_ptr(ptr: *mut Self) { unsafe { SDL_DestroyWindow(ptr as _); } }
 }
 
 bitflags! {
@@ -64,11 +65,13 @@ bitflags! {
     }
 }
 
-pub struct Renderer<'a>(Unique<SDL_Renderer>, PhantomData<Window<'a>>);
+#[repr(C)]
+pub struct Renderer(SDL_Renderer);
 
-impl<'a> Drop for Renderer<'a> {
+impl ::ptr::private::Sealed for Renderer {}
+impl ::ptr::DropPtr for Renderer {
     #[inline]
-    fn drop(&mut self) { unsafe { SDL_DestroyRenderer(self.0.as_ptr()) } }
+    fn drop_ptr(ptr: *mut Self) { unsafe { SDL_DestroyRenderer(ptr as _); } }
 }
 
 bitflags! {
