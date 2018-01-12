@@ -36,6 +36,12 @@ impl WindowPos {
 pub struct Window<'a>(Unique<SDL_Window>, PhantomData<Video<'a>>);
 
 impl<'a> Window<'a> {
+    #[inline]
+    pub fn new_renderer(&self, ix: Option<int>,
+                        flags: RendererFlags) -> Result<Renderer, ::Error> { unsafe {
+        Unique::new(SDL_CreateRenderer(self.0.as_ptr(), ix.unwrap_or(-1), flags.bits))
+            .map(|r| Renderer(r, PhantomData)).ok_or(::Error::get())
+    } }
 }
 
 impl<'a> Drop for Window<'a> {
@@ -45,3 +51,13 @@ impl<'a> Drop for Window<'a> {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct WindowFlags { bits: u32 }
+
+pub struct Renderer<'a>(Unique<SDL_Renderer>, PhantomData<Window<'a>>);
+
+impl<'a> Drop for Renderer<'a> {
+    #[inline]
+    fn drop(&mut self) { unsafe { SDL_DestroyRenderer(self.0.as_ptr()) } }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct RendererFlags { bits: u32 }
