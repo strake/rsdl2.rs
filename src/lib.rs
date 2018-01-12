@@ -29,9 +29,9 @@ impl Library {
     }
 
     #[inline]
-    pub fn video(&self) -> Option<Video> {
-        if unsafe { SDL_Init(SDL_INIT_VIDEO) } < 0 { None }
-        else { Some(Video(PhantomData, [])) }
+    pub fn video(&self) -> Result<Video, Error> {
+        if unsafe { SDL_Init(SDL_INIT_VIDEO) } < 0 { Err(Error::get()) }
+        else { Ok(Video(PhantomData, [])) }
     }
 }
 
