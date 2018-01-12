@@ -38,5 +38,10 @@ pub struct Window<'a>(Unique<SDL_Window>, PhantomData<Video<'a>>);
 impl<'a> Window<'a> {
 }
 
+impl<'a> Drop for Window<'a> {
+    #[inline]
+    fn drop(&mut self) { unsafe { SDL_DestroyWindow(self.0.as_ptr()) } }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct WindowFlags { bits: u32 }
