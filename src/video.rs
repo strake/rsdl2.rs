@@ -10,11 +10,26 @@ pub struct Video<'a>(pub(crate) PhantomData<&'a ::Library>, pub(crate) [*mut ();
 
 impl<'a> Video<'a> {
     #[inline]
-    pub fn new_window(&self, title: &Nul<u8>, pos: (int, int), size: (int, int),
+    pub fn new_window(&self, title: &Nul<u8>, pos: [WindowPos; 2], size: [int; 2],
                       flags: WindowFlags) -> Result<Window, ::Error> { unsafe {
-        Unique::new(SDL_CreateWindow(title.as_ptr() as _, pos.0, pos.1, size.0, size.1,
-                                     flags.bits))
+        Unique::new(SDL_CreateWindow(title.as_ptr() as _, pos[0].to_int(), pos[1].to_int(),
+                                     size[0], size[1], flags.bits))
             .map(|w| Window(w, PhantomData)).ok_or(::Error::get())
+    } }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum WindowPos {
+    Centered,
+    Undefined,
+    At(int),
+}
+
+impl WindowPos {
+    fn to_int(self) -> int { use self::WindowPos::*; match self {
+        Centered => SDL_WINDOWPOS_CENTERED_MASK as _,
+        Undefined => SDL_WINDOWPOS_UNDEFINED_MASK as _,
+        At(n) => n,
     } }
 }
 
