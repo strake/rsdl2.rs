@@ -49,8 +49,20 @@ impl<'a> Drop for Window<'a> {
     fn drop(&mut self) { unsafe { SDL_DestroyWindow(self.0.as_ptr()) } }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct WindowFlags { bits: u32 }
+bitflags! {
+    pub struct WindowFlags: u32 {
+        const Fullscreen        = SDL_WindowFlags::SDL_WINDOW_FULLSCREEN         as _;
+        const FullscreenDesktop = SDL_WindowFlags::SDL_WINDOW_FULLSCREEN_DESKTOP as _;
+        const OpenGL            = SDL_WindowFlags::SDL_WINDOW_OPENGL             as _;
+        const Hidden            = SDL_WindowFlags::SDL_WINDOW_HIDDEN             as _;
+        const Borderless        = SDL_WindowFlags::SDL_WINDOW_BORDERLESS         as _;
+        const Resizable         = SDL_WindowFlags::SDL_WINDOW_RESIZABLE          as _;
+        const Minimized         = SDL_WindowFlags::SDL_WINDOW_MINIMIZED          as _;
+        const Maximized         = SDL_WindowFlags::SDL_WINDOW_MAXIMIZED          as _;
+        const InputGrabbed      = SDL_WindowFlags::SDL_WINDOW_INPUT_GRABBED      as _;
+        const AllowHighDPI      = SDL_WindowFlags::SDL_WINDOW_ALLOW_HIGHDPI      as _;
+    }
+}
 
 pub struct Renderer<'a>(Unique<SDL_Renderer>, PhantomData<Window<'a>>);
 
@@ -59,5 +71,11 @@ impl<'a> Drop for Renderer<'a> {
     fn drop(&mut self) { unsafe { SDL_DestroyRenderer(self.0.as_ptr()) } }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct RendererFlags { bits: u32 }
+bitflags! {
+    pub struct RendererFlags: u32 {
+        const Software      = SDL_RendererFlags::SDL_RENDERER_SOFTWARE      as _;
+        const Accelerated   = SDL_RendererFlags::SDL_RENDERER_ACCELERATED   as _;
+        const PresentVSync  = SDL_RendererFlags::SDL_RENDERER_PRESENTVSYNC  as _;
+        const TargetTexture = SDL_RendererFlags::SDL_RENDERER_TARGETTEXTURE as _;
+    }
+}

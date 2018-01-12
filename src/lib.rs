@@ -1,5 +1,7 @@
 #![no_std]
 
+#[macro_use]
+extern crate bitflags;
 extern crate libc;
 extern crate null_terminated;
 extern crate ptr as ptr_;
