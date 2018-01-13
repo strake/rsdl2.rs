@@ -117,6 +117,14 @@ pub struct Renderer(SDL_Renderer);
 
 impl Renderer {
     #[inline]
+    pub fn size(&self) -> Result<[int; 2], ::Error> { unsafe {
+        let mut size: [int; 2] = mem::uninitialized();
+        if SDL_GetRendererOutputSize(&self.0 as *const _ as _, &mut size[0], &mut size[1]) < 0 {
+            Err(::Error::get())
+        } else { Ok(size) }
+    } }
+
+    #[inline]
     pub fn clear(&self) -> Result<(), ::Error> { unsafe {
         if SDL_RenderClear(&self.0 as *const _ as _) < 0 { Err(::Error::get()) } else { Ok(()) }
     } }
