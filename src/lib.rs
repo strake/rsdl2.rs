@@ -48,6 +48,7 @@ pub mod time;
 pub mod video;
 pub mod window;
 
+pub use event::Event;
 pub use video::Video;
 
 #[derive(Clone, Copy)]

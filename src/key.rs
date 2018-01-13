@@ -4,10 +4,10 @@ use self::SDL_Keymod::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct Sym {
-    pub(crate) scan: ScanCode,
-    pub(crate) sym: Code,
-    pub(crate) mod_: Mod,
-    pub(crate) x: Option<char>,
+    pub scan: ScanCode,
+    pub sym: Code,
+    pub mod_: Mod,
+    pub x: Option<char>,
 }
 
 bitflags! {
@@ -26,14 +26,5 @@ bitflags! {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub enum ScanCode {
-    #[doc(hidden)]
-    __Inexhaustive,
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub enum Code {
-    #[doc(hidden)]
-    __Inexhaustive,
-}
+pub use ::sys::SDL_Scancode as ScanCode;
+pub use ::sys::SDL_Keycode as Code;
