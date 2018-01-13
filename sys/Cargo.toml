@@ -1,15 +1,15 @@
 [package]
-name = "rsdl2"
+name = "rsdl2-sys"
 version = "0.1.0"
 authors = ["M Farkas-Dyck <strake888@gmail.com>"]
-description = "Simple DirectMedia Layer"
+description = "SDL2 low-level bonds"
 license = "Zlib"
 
-[dependencies]
-bitflags = "1.0"
-libc = { version = "0.2", default-features = false }
-null-terminated = "0.2.7"
+[lib]
+name = "sdl2_sys"
 
-[dependencies.rsdl2-sys]
-path = "sys"
-version = "0.1"
+[dependencies]
+libc = { version = "0.2", default-features = false }
+
+[build-dependencies]
+bindgen = "0.26.3"

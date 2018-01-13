@@ -1,6 +1,6 @@
 use core::marker::PhantomData;
 use ptr::Ptr;
-use sdl2_sys::*;
+use sys::*;
 
 use ::Nul;
 use ::libc::{c_int as int};

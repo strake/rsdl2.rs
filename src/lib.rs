@@ -4,13 +4,13 @@
 extern crate bitflags;
 extern crate libc;
 extern crate null_terminated;
-extern crate sdl2_sys;
+pub extern crate sdl2_sys as sys;
 
 use core::{cmp, fmt};
 use core::marker::PhantomData;
 use core::ops::Deref;
 use null_terminated::Nul;
-use sdl2_sys::*;
+use sys::*;
 
 mod lock;
 
