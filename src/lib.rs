@@ -1,5 +1,7 @@
 #![no_std]
 
+#![feature(extern_types)]
+
 #[macro_use]
 extern crate bitflags;
 extern crate libc;
