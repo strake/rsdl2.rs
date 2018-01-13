@@ -42,7 +42,12 @@ impl Drop for Library {
     fn drop(&mut self) { unsafe { SDL_Quit(); } }
 }
 
+pub mod event;
+pub mod key;
+pub mod time;
 pub mod video;
+pub mod window;
+
 pub use video::Video;
 
 #[derive(Clone, Copy)]
