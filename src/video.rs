@@ -194,4 +194,6 @@ impl ::ptr::DropPtr for Surface {
 #[repr(C)]
 pub struct Rect { pub pos: [int; 2], pub size: [int; 2] }
 
+pub use ::sys::SDL_Color as Color;
+
 fn to_ptr<A>(a: &Option<A>) -> *const A { a.as_ref().map_or(::core::ptr::null(), |p| p as _) }
