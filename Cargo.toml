@@ -1,6 +1,6 @@
 [package]
 name = "rsdl2"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["M Farkas-Dyck <strake888@gmail.com>"]
 description = "Simple DirectMedia Layer"
 license = "Zlib"
