@@ -91,10 +91,9 @@ impl Window {
     } }
 }
 
-impl ::ptr::private::Sealed for Window {}
-impl ::ptr::DropPtr for Window {
+unsafe impl ::drop_ptr::DropPtr for Window {
     #[inline]
-    fn drop_ptr(ptr: *mut Self) { unsafe { SDL_DestroyWindow(ptr as _); } }
+    unsafe fn drop_ptr(ptr: *mut Self) { SDL_DestroyWindow(ptr as _); }
 }
 
 bitflags! {
@@ -147,10 +146,9 @@ impl Renderer {
     } }
 }
 
-impl ::ptr::private::Sealed for Renderer {}
-impl ::ptr::DropPtr for Renderer {
+unsafe impl ::drop_ptr::DropPtr for Renderer {
     #[inline]
-    fn drop_ptr(ptr: *mut Self) { unsafe { SDL_DestroyRenderer(ptr as _); } }
+    unsafe fn drop_ptr(ptr: *mut Self) { SDL_DestroyRenderer(ptr as _); }
 }
 
 bitflags! {
@@ -165,10 +163,9 @@ bitflags! {
 #[repr(C)]
 pub struct Texture(SDL_Texture);
 
-impl ::ptr::private::Sealed for Texture {}
-impl ::ptr::DropPtr for Texture {
+unsafe impl ::drop_ptr::DropPtr for Texture {
     #[inline]
-    fn drop_ptr(ptr: *mut Self) { unsafe { SDL_DestroyTexture(ptr as _) } }
+    unsafe fn drop_ptr(ptr: *mut Self) { SDL_DestroyTexture(ptr as _) }
 }
 
 #[repr(C)]
@@ -193,10 +190,9 @@ impl Surface {
     pub unsafe fn raw_mut(&mut self) -> &mut SDL_Surface { &mut self.0 }
 }
 
-impl ::ptr::private::Sealed for Surface {}
-impl ::ptr::DropPtr for Surface {
+unsafe impl ::drop_ptr::DropPtr for Surface {
     #[inline]
-    fn drop_ptr(ptr: *mut Self) { unsafe { SDL_FreeSurface(ptr as _) } }
+    unsafe fn drop_ptr(ptr: *mut Self) { SDL_FreeSurface(ptr as _) }
 }
 
 #[repr(C)]

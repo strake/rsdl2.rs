@@ -4,6 +4,7 @@
 
 #[macro_use]
 extern crate bitflags;
+extern crate drop_ptr;
 extern crate libc;
 extern crate null_terminated;
 pub extern crate sdl2_sys as sys;
@@ -16,7 +17,12 @@ use sys::*;
 
 mod lock;
 
-pub mod ptr;
+#[deprecated]
+pub mod ptr {
+    pub use drop_ptr::*;
+    pub use drop_ptr::Box as Ptr;
+}
+#[deprecated]
 pub use ptr::Ptr;
 
 #[derive(Debug)]
