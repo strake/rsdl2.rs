@@ -48,7 +48,7 @@ impl<'a> PixelsMut<'a> {
     #[inline]
     pub unsafe fn from_raw_parts(ptr: *mut (), size: [int; 2],
                                  depth: int, pitch: int) -> Self { Self {
-        ptr: mem::transmute(ptr), size, depth, pitch,
+        ptr: &mut *(ptr as *mut _), size, depth, pitch,
     } }
 
     #[inline]
@@ -177,7 +177,7 @@ impl Surface {
 
     #[inline]
     pub fn pixels_mut(&mut self) -> PixelsMut { unsafe { PixelsMut {
-        ptr: mem::transmute(self.0.pixels),
+        ptr: &mut *(self.0.pixels as *mut _),
         size: [self.0.w, self.0.h],
         depth: (*self.0.format).BitsPerPixel as _,
         pitch: self.0.pitch,
