@@ -14,7 +14,7 @@ impl<'a> Video<'a> {
     pub fn new_window(&self, title: &Nul<u8>, pos: [WindowPos; 2], size: [int; 2],
                       flags: WindowFlags) -> Result<Ptr<'a, Window>, ::Error> { unsafe {
         Ptr::new(SDL_CreateWindow(title.as_ptr() as _, pos[0].to_int(), pos[1].to_int(),
-                                  size[0], size[1], flags.bits) as _).ok_or(::Error::get())
+                                  size[0], size[1], flags.bits) as _).ok_or_else(::Error::get)
     } }
 
     #[inline]
@@ -22,7 +22,7 @@ impl<'a> Video<'a> {
                            mask: [u32; 4]) -> Result<Ptr<'a, Surface>, ::Error> { unsafe {
         Ptr::new(SDL_CreateRGBSurface(0,       size[0], size[1], depth,
                                       mask[0], mask[1], mask[2], mask[3]) as _)
-            .ok_or(::Error::get())
+            .ok_or_else(::Error::get)
     } }
 
     #[inline]
@@ -31,7 +31,7 @@ impl<'a> Video<'a> {
         Ptr::new(SDL_CreateRGBSurfaceFrom(data.ptr as *mut _ as _, data.size[0], data.size[1],
                                           data.depth, data.pitch,
                                           mask[0], mask[1], mask[2], mask[3]) as _)
-            .ok_or(::Error::get())
+            .ok_or_else(::Error::get)
     } }
 }
 
@@ -87,7 +87,7 @@ impl Window {
     pub fn new_renderer(&mut self, ix: Option<int>,
                         flags: RendererFlags) -> Result<Ptr<Renderer>, ::Error> { unsafe {
         Ptr::new(SDL_CreateRenderer(&mut self.0, ix.unwrap_or(-1), flags.bits) as _)
-            .ok_or(::Error::get())
+            .ok_or_else(::Error::get)
     } }
 }
 
@@ -142,7 +142,7 @@ impl Renderer {
     #[inline]
     pub fn new_texture_from_surface(&self, surf: &Surface) -> Result<Ptr<Texture>, ::Error> { unsafe {
         Ptr::new(SDL_CreateTextureFromSurface(&self.0 as *const _ as _, surf as *const _ as *mut _) as _)
-            .ok_or(::Error::get())
+            .ok_or_else(::Error::get)
     } }
 }
 
