@@ -195,6 +195,7 @@ unsafe impl ::drop_ptr::DropPtr for Surface {
     unsafe fn drop_ptr(ptr: *mut Self) { SDL_FreeSurface(ptr as _) }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[repr(C)]
 pub struct Rect { pub pos: [int; 2], pub size: [int; 2] }
 
