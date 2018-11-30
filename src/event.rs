@@ -5,9 +5,24 @@ use sys::*;
 pub enum Event {
     Window(::window::Id, ::window::Event),
     Keyboard { wid: ::window::Id, state: bool, repeat: bool, sym: ::key::Sym },
+    Pointer { wid: ::window::Id, state: bool, pos: [i32; 2], button: Button },
+    Text { wid: ::window::Id, text: [u8; 32] },
     Quit,
     #[doc(hidden)]
     __Inexhaustive(SDL_EventType),
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[repr(transparent)]
+pub struct Button(u8);
+
+impl Button {
+    pub const Left  : Self = Button(SDL_BUTTON_LEFT   as _);
+    pub const Middle: Self = Button(SDL_BUTTON_MIDDLE as _);
+    pub const Right : Self = Button(SDL_BUTTON_RIGHT  as _);
+
+    #[inline]
+    pub const fn raw(self) -> u8 { self.0 }
 }
 
 impl From<SDL_Event> for Event {
@@ -49,6 +64,12 @@ impl From<SDL_Event> for Event {
                     x: None,
                 }
             },
+            SDL_MOUSEBUTTONDOWN | SDL_MOUSEBUTTONUP => Pointer {
+                wid: raw.button.windowID, state: SDL_MOUSEBUTTONDOWN as u32 == raw.type_,
+                pos: [raw.button.x, raw.button.y],
+                button: Button(raw.button.button as _),
+            },
+            SDL_TEXTINPUT => Text { wid: raw.text.windowID, text: mem::transmute(raw.text.text) },
             t => self::Event::__Inexhaustive(t),
         }
     } }

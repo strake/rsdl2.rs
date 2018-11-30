@@ -37,6 +37,33 @@ impl<'a> Video<'a> {
 
 extern { pub type Pixels; }
 
+pub struct PixelsRef<'a> {
+    ptr: &'a Pixels,
+    size: [int; 2],
+    depth: int,
+    pitch: int,
+}
+
+impl<'a> PixelsRef<'a> {
+    #[inline]
+    pub unsafe fn from_raw_parts(ptr: *const (), size: [int; 2],
+                                 depth: int, pitch: int) -> Self { Self {
+        ptr: &*(ptr as *const _), size, depth, pitch,
+    } }
+
+    #[inline]
+    pub fn rows(&mut self) -> slice::Chunks<'a, u8> {
+        let p = self.pitch as usize;
+        self.raw_bytes().chunks(p)
+    }
+
+    #[inline]
+    pub fn raw_bytes(&self) -> &'a [u8] { unsafe {
+        slice::from_raw_parts(self.ptr as *const _ as *const u8,
+                              (self.pitch * self.size[1]) as _)
+    } }
+}
+
 pub struct PixelsMut<'a> {
     ptr: &'a mut Pixels,
     size: [int; 2],
@@ -52,13 +79,13 @@ impl<'a> PixelsMut<'a> {
     } }
 
     #[inline]
-    pub fn rows(&mut self) -> slice::ChunksMut<u8> {
+    pub fn rows(&mut self) -> slice::ChunksMut<'a, u8> {
         let p = self.pitch as usize;
         self.raw_bytes().chunks_mut(p)
     }
 
     #[inline]
-    pub fn raw_bytes(&mut self) -> &mut [u8] { unsafe {
+    pub fn raw_bytes(&mut self) -> &'a mut [u8] { unsafe {
         slice::from_raw_parts_mut(self.ptr as *mut _ as *mut u8,
                                   (self.pitch * self.size[1]) as _)
     } }
@@ -89,6 +116,33 @@ impl Window {
         Ptr::new(SDL_CreateRenderer(&mut self.0, ix.unwrap_or(-1), flags.bits) as _)
             .ok_or_else(::Error::get)
     } }
+
+    #[inline]
+    pub fn size(&self) -> [int; 2] { unsafe {
+        let mut size: [int; 2] = mem::uninitialized();
+        SDL_GetWindowSize(&self.0 as *const _ as _, &mut size[0], &mut size[1]);
+        size
+    } }
+
+    #[inline]
+    pub fn set_size(&mut self, size: [int; 2]) { unsafe {
+        SDL_SetWindowSize(&mut self.0, size[0], size[1])
+    } }
+
+    #[inline]
+    pub fn flags(&self) -> WindowFlags { unsafe {
+        mem::transmute(SDL_GetWindowFlags(&self.0 as *const _ as _))
+    } }
+
+    #[inline]
+    pub fn title(&self) -> &Nul<u8> { unsafe {
+        Nul::new_unchecked(SDL_GetWindowTitle(&self.0 as *const _ as _) as _)
+    } }
+
+    #[inline]
+    pub fn set_title(&mut self, title: &Nul<u8>) { unsafe {
+        SDL_SetWindowTitle(&mut self.0, &title[0] as *const _ as _)
+    } }
 }
 
 unsafe impl ::drop_ptr::DropPtr for Window {
@@ -101,13 +155,23 @@ bitflags! {
         const Fullscreen        = SDL_WindowFlags::SDL_WINDOW_FULLSCREEN         as _;
         const FullscreenDesktop = SDL_WindowFlags::SDL_WINDOW_FULLSCREEN_DESKTOP as _;
         const OpenGL            = SDL_WindowFlags::SDL_WINDOW_OPENGL             as _;
+        const Vulkan            = SDL_WindowFlags::SDL_WINDOW_VULKAN             as _;
         const Hidden            = SDL_WindowFlags::SDL_WINDOW_HIDDEN             as _;
         const Borderless        = SDL_WindowFlags::SDL_WINDOW_BORDERLESS         as _;
         const Resizable         = SDL_WindowFlags::SDL_WINDOW_RESIZABLE          as _;
         const Minimized         = SDL_WindowFlags::SDL_WINDOW_MINIMIZED          as _;
         const Maximized         = SDL_WindowFlags::SDL_WINDOW_MAXIMIZED          as _;
         const InputGrabbed      = SDL_WindowFlags::SDL_WINDOW_INPUT_GRABBED      as _;
+        const InputFocus        = SDL_WindowFlags::SDL_WINDOW_INPUT_FOCUS        as _;
+        const MouseFocus        = SDL_WindowFlags::SDL_WINDOW_MOUSE_FOCUS        as _;
+        const Foreign           = SDL_WindowFlags::SDL_WINDOW_FOREIGN            as _;
         const AllowHighDPI      = SDL_WindowFlags::SDL_WINDOW_ALLOW_HIGHDPI      as _;
+        const MouseCapture      = SDL_WindowFlags::SDL_WINDOW_MOUSE_CAPTURE      as _;
+        const AlwaysOnTop       = SDL_WindowFlags::SDL_WINDOW_ALWAYS_ON_TOP      as _;
+        const SkipTaskbar       = SDL_WindowFlags::SDL_WINDOW_SKIP_TASKBAR       as _;
+        const Utility           = SDL_WindowFlags::SDL_WINDOW_UTILITY            as _;
+        const Tooltip           = SDL_WindowFlags::SDL_WINDOW_TOOLTIP            as _;
+        const PopupMenu         = SDL_WindowFlags::SDL_WINDOW_POPUP_MENU         as _;
     }
 }
 
@@ -124,7 +188,8 @@ impl Renderer {
     } }
 
     #[inline]
-    pub fn clear(&self) -> Result<(), ::Error> { unsafe {
+    pub fn clear(&self, c: Color) -> Result<(), ::Error> { unsafe {
+        self.set_draw_color(c)?;
         if SDL_RenderClear(&self.0 as *const _ as _) < 0 { Err(::Error::get()) } else { Ok(()) }
     } }
 
@@ -140,9 +205,22 @@ impl Renderer {
     } }
 
     #[inline]
+    pub fn fill_rect(&self, r: Option<Rect>, c: Color) -> Result<(), ::Error> { unsafe {
+        self.set_draw_color(c)?;
+        if SDL_RenderFillRect(&self.0 as *const _ as _, to_ptr(&r) as _) < 0 { Err(::Error::get()) }
+        else { Ok(()) }
+    } }
+
+    #[inline]
     pub fn new_texture_from_surface(&self, surf: &Surface) -> Result<Ptr<Texture>, ::Error> { unsafe {
         Ptr::new(SDL_CreateTextureFromSurface(&self.0 as *const _ as _, surf as *const _ as *mut _) as _)
             .ok_or_else(::Error::get)
+    } }
+
+    #[inline]
+    fn set_draw_color(&self, c: Color) -> Result<(), ::Error> { unsafe {
+        if SDL_SetRenderDrawColor(&self.0 as *const _ as _, c.r, c.g, c.b, c.a) < 0 { Err(::Error::get()) }
+        else { Ok(()) }
     } }
 }
 
@@ -174,6 +252,14 @@ pub struct Surface(SDL_Surface);
 impl Surface {
     #[inline]
     pub fn size(&self) -> [int; 2] { [self.0.w, self.0.h] }
+
+    #[inline]
+    pub fn pixels(&self) -> PixelsRef { unsafe { PixelsRef {
+        ptr: &*(self.0.pixels as *const _),
+        size: [self.0.w, self.0.h],
+        depth: (*self.0.format).BitsPerPixel as _,
+        pitch: self.0.pitch,
+    } } }
 
     #[inline]
     pub fn pixels_mut(&mut self) -> PixelsMut { unsafe { PixelsMut {
