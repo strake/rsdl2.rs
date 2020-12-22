@@ -84,8 +84,9 @@ impl<'a, 'b> Iterator for Iter<'a, 'b> {
     type Item = (Event, ::time::Stamp);
     #[inline]
     fn next(&mut self) -> Option<(Event, ::time::Stamp)> { unsafe {
-        let mut ev = mem::uninitialized();
-        if if self.0 { SDL_WaitEvent } else { SDL_PollEvent } (&mut ev) > 0 {
+        let mut ev = mem::MaybeUninit::uninit();
+        if if self.0 { SDL_WaitEvent } else { SDL_PollEvent } (ev.assume_init_mut()) > 0 {
+            let ev = ev.assume_init();
             Some((Event::from(ev), ev.common.timestamp))
         } else { None }
     } }

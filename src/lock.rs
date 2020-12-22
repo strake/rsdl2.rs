@@ -1,8 +1,8 @@
-use core::sync::atomic::{ATOMIC_BOOL_INIT, AtomicBool, Ordering as Memord};
+use core::sync::atomic::{AtomicBool, Ordering as Memord};
 
 use self::Memord::*;
 
-pub static lock: Lock = Lock(ATOMIC_BOOL_INIT);
+pub static lock: Lock = Lock(AtomicBool::new(false));
 
 #[derive(Debug)]
 pub struct Lock(AtomicBool);

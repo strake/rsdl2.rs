@@ -1,6 +1,7 @@
 #![no_std]
 
 #![feature(extern_types)]
+#![feature(maybe_uninit_ref)]
 
 #[macro_use]
 extern crate bitflags;

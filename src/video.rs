@@ -119,9 +119,10 @@ impl Window {
 
     #[inline]
     pub fn size(&self) -> [int; 2] { unsafe {
-        let mut size: [int; 2] = mem::uninitialized();
-        SDL_GetWindowSize(&self.0 as *const _ as _, &mut size[0], &mut size[1]);
-        size
+        let mut size = mem::MaybeUninit::<[int; 2]>::uninit();
+        let size_ref = size.assume_init_mut();
+        SDL_GetWindowSize(&self.0 as *const _ as _, &mut size_ref[0], &mut size_ref[1]);
+        size.assume_init()
     } }
 
     #[inline]
@@ -181,10 +182,11 @@ pub struct Renderer(SDL_Renderer);
 impl Renderer {
     #[inline]
     pub fn size(&self) -> Result<[int; 2], ::Error> { unsafe {
-        let mut size: [int; 2] = mem::uninitialized();
-        if SDL_GetRendererOutputSize(&self.0 as *const _ as _, &mut size[0], &mut size[1]) < 0 {
+        let mut size = mem::MaybeUninit::<[int; 2]>::uninit();
+        let size_ref = size.assume_init_mut();
+        if SDL_GetRendererOutputSize(&self.0 as *const _ as _, &mut size_ref[0], &mut size_ref[1]) < 0 {
             Err(::Error::get())
-        } else { Ok(size) }
+        } else { Ok(size.assume_init()) }
     } }
 
     #[inline]
