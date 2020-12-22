@@ -8,14 +8,13 @@ fn main() {
 
     ::bindgen::Builder::default()
         .use_core().ctypes_prefix("::libc")
-        .unstable_rust(true)
+        .rust_target(::bindgen::RustTarget::Nightly)
         .header("/usr/include/SDL2/SDL.h")
         .header("/usr/include/SDL2/SDL_events.h")
         .header("/usr/include/SDL2/SDL_video.h")
         .clang_arg("-DSDL_VIDEO_DRIVER_X11")
-        .hide_type("FP_[[:alpha:]]*")
-        .raw_line("impl Clone for SDL_Event { #[inline] fn clone(&self) -> Self { *self } }")
-        .raw_line("impl Copy for SDL_Event {}")
+        .blacklist_item("FP_[[:alpha:]]*")
+        .prepend_enum_name(false)
         .generate().ok()
         .and_then(|bs| bs.write_to_file(out_path.join("raw.rs")).ok())
         .unwrap();

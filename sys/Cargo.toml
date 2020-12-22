@@ -12,4 +12,4 @@ name = "sdl2_sys"
 libc = { version = "0.2", default-features = false }
 
 [build-dependencies]
-bindgen = "0.26.3"
+bindgen = "0.56"

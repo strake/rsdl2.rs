@@ -152,26 +152,26 @@ unsafe impl ::drop_ptr::DropPtr for Window {
 
 bitflags! {
     pub struct WindowFlags: u32 {
-        const Fullscreen        = SDL_WindowFlags::SDL_WINDOW_FULLSCREEN         as _;
-        const FullscreenDesktop = SDL_WindowFlags::SDL_WINDOW_FULLSCREEN_DESKTOP as _;
-        const OpenGL            = SDL_WindowFlags::SDL_WINDOW_OPENGL             as _;
-        const Vulkan            = SDL_WindowFlags::SDL_WINDOW_VULKAN             as _;
-        const Hidden            = SDL_WindowFlags::SDL_WINDOW_HIDDEN             as _;
-        const Borderless        = SDL_WindowFlags::SDL_WINDOW_BORDERLESS         as _;
-        const Resizable         = SDL_WindowFlags::SDL_WINDOW_RESIZABLE          as _;
-        const Minimized         = SDL_WindowFlags::SDL_WINDOW_MINIMIZED          as _;
-        const Maximized         = SDL_WindowFlags::SDL_WINDOW_MAXIMIZED          as _;
-        const InputGrabbed      = SDL_WindowFlags::SDL_WINDOW_INPUT_GRABBED      as _;
-        const InputFocus        = SDL_WindowFlags::SDL_WINDOW_INPUT_FOCUS        as _;
-        const MouseFocus        = SDL_WindowFlags::SDL_WINDOW_MOUSE_FOCUS        as _;
-        const Foreign           = SDL_WindowFlags::SDL_WINDOW_FOREIGN            as _;
-        const AllowHighDPI      = SDL_WindowFlags::SDL_WINDOW_ALLOW_HIGHDPI      as _;
-        const MouseCapture      = SDL_WindowFlags::SDL_WINDOW_MOUSE_CAPTURE      as _;
-        const AlwaysOnTop       = SDL_WindowFlags::SDL_WINDOW_ALWAYS_ON_TOP      as _;
-        const SkipTaskbar       = SDL_WindowFlags::SDL_WINDOW_SKIP_TASKBAR       as _;
-        const Utility           = SDL_WindowFlags::SDL_WINDOW_UTILITY            as _;
-        const Tooltip           = SDL_WindowFlags::SDL_WINDOW_TOOLTIP            as _;
-        const PopupMenu         = SDL_WindowFlags::SDL_WINDOW_POPUP_MENU         as _;
+        const Fullscreen        = SDL_WINDOW_FULLSCREEN         as _;
+        const FullscreenDesktop = SDL_WINDOW_FULLSCREEN_DESKTOP as _;
+        const OpenGL            = SDL_WINDOW_OPENGL             as _;
+        const Vulkan            = SDL_WINDOW_VULKAN             as _;
+        const Hidden            = SDL_WINDOW_HIDDEN             as _;
+        const Borderless        = SDL_WINDOW_BORDERLESS         as _;
+        const Resizable         = SDL_WINDOW_RESIZABLE          as _;
+        const Minimized         = SDL_WINDOW_MINIMIZED          as _;
+        const Maximized         = SDL_WINDOW_MAXIMIZED          as _;
+        const InputGrabbed      = SDL_WINDOW_INPUT_GRABBED      as _;
+        const InputFocus        = SDL_WINDOW_INPUT_FOCUS        as _;
+        const MouseFocus        = SDL_WINDOW_MOUSE_FOCUS        as _;
+        const Foreign           = SDL_WINDOW_FOREIGN            as _;
+        const AllowHighDPI      = SDL_WINDOW_ALLOW_HIGHDPI      as _;
+        const MouseCapture      = SDL_WINDOW_MOUSE_CAPTURE      as _;
+        const AlwaysOnTop       = SDL_WINDOW_ALWAYS_ON_TOP      as _;
+        const SkipTaskbar       = SDL_WINDOW_SKIP_TASKBAR       as _;
+        const Utility           = SDL_WINDOW_UTILITY            as _;
+        const Tooltip           = SDL_WINDOW_TOOLTIP            as _;
+        const PopupMenu         = SDL_WINDOW_POPUP_MENU         as _;
     }
 }
 
@@ -231,10 +231,10 @@ unsafe impl ::drop_ptr::DropPtr for Renderer {
 
 bitflags! {
     pub struct RendererFlags: u32 {
-        const Software      = SDL_RendererFlags::SDL_RENDERER_SOFTWARE      as _;
-        const Accelerated   = SDL_RendererFlags::SDL_RENDERER_ACCELERATED   as _;
-        const PresentVSync  = SDL_RendererFlags::SDL_RENDERER_PRESENTVSYNC  as _;
-        const TargetTexture = SDL_RendererFlags::SDL_RENDERER_TARGETTEXTURE as _;
+        const Software      = SDL_RENDERER_SOFTWARE      as _;
+        const Accelerated   = SDL_RENDERER_ACCELERATED   as _;
+        const PresentVSync  = SDL_RENDERER_PRESENTVSYNC  as _;
+        const TargetTexture = SDL_RENDERER_TARGETTEXTURE as _;
     }
 }
 

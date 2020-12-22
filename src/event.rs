@@ -30,8 +30,6 @@ impl From<SDL_Event> for Event {
     fn from(raw: SDL_Event) -> Self {
         use self::Event::*;
         use ::window::Event::*;
-        use SDL_EventType::*;
-        use SDL_WindowEventID::*;
         unsafe { match mem::transmute(raw.type_) {
             SDL_QUIT => Quit,
             SDL_WINDOWEVENT => Window(raw.window.windowID,

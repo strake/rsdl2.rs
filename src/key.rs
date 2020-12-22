@@ -1,8 +1,6 @@
 use null_terminated::Nul;
 use sys::*;
 
-use self::SDL_Keymod::*;
-
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct Sym {
     pub scan: ScanCode,

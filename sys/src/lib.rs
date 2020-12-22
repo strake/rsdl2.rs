@@ -1,6 +1,7 @@
 #![no_std]
 
 #![allow(clippy::approx_constant)]
+#![allow(improper_ctypes)]
 
 extern crate libc;
 
