@@ -40,6 +40,7 @@ extern { pub type Pixels; }
 pub struct PixelsRef<'a> {
     ptr: &'a Pixels,
     size: [int; 2],
+    #[allow(dead_code)]
     depth: int,
     pitch: int,
 }
